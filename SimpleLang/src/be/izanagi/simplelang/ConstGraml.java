@@ -14,8 +14,14 @@ public class ConstGraml {
 	}
 	public static void init(){
 		pattern.put("[a-zA-Z]+( )+[a-zA-Z]+( )*=( )*.+", "var_decl");
+		pattern.put("[a-zA-Z]+( )*=( )*.+", "var_upgrade");
 		pattern.put("echo( )+[a-zA-Z]+", "echo");
 		pattern.put("recall( )+[a-zA-Z]+", "recall");
+		pattern.put("[0-9]+( )+\\+( )+[0-9]+", "math_plus");
+		pattern.put("[0-9]+( )+-( )+[0-9]+", "math_minus");
+		pattern.put("[0-9]+( )+\\*( )+[0-9]+", "math_prod");
+		pattern.put("[0-9]+( )+/( )+[0-9]+", "math_div");
+		pattern.put("[0-9A-Za-z]", "unitary_value");
 	}
 	public static Set<String> getPatterns(){
 		return pattern.keySet();

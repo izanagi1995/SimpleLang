@@ -4,6 +4,7 @@ import java.util.Set;
 
 import be.izanagi.simplelang.ConstGraml;
 import be.izanagi.simplelang.exceptions.AlreadyInMemoryException;
+import be.izanagi.simplelang.exceptions.VariableNotFoundException;
 import be.izanagi.simplelang.register.variables.AllowedTypes;
 import be.izanagi.simplelang.register.variables.SimpleVariable;
 import be.izanagi.simplelang.register.variables.VarMemory;
@@ -27,6 +28,22 @@ public class SimpleRegister {
 			try {
 				VarMemory.pushToMemory(sv);
 			} catch (AlreadyInMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else if(action.equals("var_upgrade")){
+			String name = args[0];
+			Object value = args[2];
+			try {
+				SimpleVariable sv = VarMemory.recallFromName(name);
+				Class clazz = sv.getClasse();
+				if(clazz.getName().equals("java.lang.Integer")){
+					value = new Integer(Integer.parseInt(args[2]));
+				}else{
+					value = clazz.cast(args[2]);
+				}
+				sv.setValue(value);
+			} catch (VariableNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

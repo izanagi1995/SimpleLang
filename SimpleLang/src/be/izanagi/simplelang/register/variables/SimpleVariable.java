@@ -22,9 +22,14 @@ public class SimpleVariable{
 		return value;
 	}
 	public void setValue(Object value) {
-		this.value = value;
+		if(value.getClass().equals(classe)){
+			this.value = value;
+		}
 	}
 	public String toString(){
 		return classe + " " + name + " = "+value;
+	}
+	public Class getClasse(){
+		return classe;
 	}
 }

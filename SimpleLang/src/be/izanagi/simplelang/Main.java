@@ -12,6 +12,13 @@ public class Main {
 			new Parser().parse("integer chiffre = 3");
 			new Parser().parse("echo mot");
 			new Parser().parse("recall chiffre");
+			new Parser().parse("chiffre = 4");
+			new Parser().parse("recall chiffre");
+			new Parser().parse("4 + 4");
+			new Parser().parse("4 - 4");
+			new Parser().parse("2 * 2");
+			new Parser().parse("9 / 3");
+			new Parser().parse("a");
 		} catch (FormatParserInvalid e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
