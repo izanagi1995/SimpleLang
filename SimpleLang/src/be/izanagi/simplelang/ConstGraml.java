@@ -1,10 +1,13 @@
 package be.izanagi.simplelang;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConstGraml {
-	public final static boolean DEBUG = false;
+	public final static boolean DEBUG = true;
 	private static HashMap<String, String> pattern = new HashMap<String, String>();
 	public static void addToken(String pat, String type){
 		pattern.put(pat, type);
@@ -17,13 +20,23 @@ public class ConstGraml {
 		pattern.put("[a-zA-Z]+( )*=( )*.+", "var_upgrade");
 		pattern.put("echo( )+[a-zA-Z]+", "echo");
 		pattern.put("recall( )+[a-zA-Z]+", "recall");
-		pattern.put("[0-9]+( )+\\+( )+[0-9]+", "math_plus");
-		pattern.put("[0-9]+( )+-( )+[0-9]+", "math_minus");
-		pattern.put("[0-9]+( )+\\*( )+[0-9]+", "math_prod");
-		pattern.put("[0-9]+( )+/( )+[0-9]+", "math_div");
-		pattern.put("[0-9A-Za-z]", "unitary_value");
+		pattern.put("( )*[0-9]+( )?\\+( )?[0-9]+", "math_plus");
+		pattern.put("( )*[0-9]+( )?-( )?[0-9]+", "math_minus");
+		pattern.put("( )*[0-9]+( )?\\*( )?[0-9]+", "math_prod");
+		pattern.put("( )*[0-9]+( )?/( )?[0-9]+", "math_div");
 	}
 	public static Set<String> getPatterns(){
 		return pattern.keySet();
+	}
+	public static String matchPattern(String ln){
+		for(Map.Entry<String, String> ent:pattern.entrySet()){
+			Pattern p = Pattern.compile(ent.getKey());
+			Matcher m = p.matcher(ln);
+			if(m.matches()){
+				System.out.println("--> "+ent.getValue());
+				return ent.getValue();
+			}
+		}
+		return null;
 	}
 }

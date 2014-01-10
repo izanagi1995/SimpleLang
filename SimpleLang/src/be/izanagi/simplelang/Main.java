@@ -9,16 +9,15 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 			new Parser().parse("string mot = az");
-			new Parser().parse("integer chiffre = 3");
+			new Parser().parse("integer chiffre = 3 + 3");
 			new Parser().parse("echo mot");
 			new Parser().parse("recall chiffre");
-			new Parser().parse("chiffre = 4");
+			new Parser().parse("chiffre = 4 - 2");
 			new Parser().parse("recall chiffre");
-			new Parser().parse("4 + 4");
-			new Parser().parse("4 - 4");
-			new Parser().parse("2 * 2");
-			new Parser().parse("9 / 3");
-			new Parser().parse("a");
+			new Parser().parse("chiffre=3*3");
+			new Parser().parse("recall chiffre");
+			new Parser().parse("chiffre= 18 / 3");
+			new Parser().parse("recall chiffre");
 		} catch (FormatParserInvalid e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

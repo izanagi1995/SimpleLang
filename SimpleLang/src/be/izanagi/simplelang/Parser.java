@@ -9,6 +9,7 @@ import be.izanagi.simplelang.exceptions.UnknownTokenException;
 import be.izanagi.simplelang.exceptions.VariableNotFoundException;
 import be.izanagi.simplelang.register.SimpleRegister;
 import be.izanagi.simplelang.register.variables.VarMemory;
+import be.izanagi.simplelang.utils.SimpleMath;
 
 public class Parser {
 	public Parser(){
@@ -26,7 +27,6 @@ public class Parser {
 				try {
 					dispatch(ConstGraml.actionFromPattern(pat), line);
 				} catch (UnknownTokenException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return;
@@ -36,30 +36,45 @@ public class Parser {
 	}
 	private String[] dispatch(String action, String line) throws UnknownTokenException {
 		if(action.equals("var_decl")){
-			//Decoupage
-			String[] sp = Pattern.compile("( )+").split(line);
-			if(ConstGraml.DEBUG){
-				for(String sp1:sp){
-					System.out.println(sp1);
-				}
+			String[] sp = Pattern.compile("=").split(line);
+			String instr = sp[0];
+			String value = sp[1];
+			String type = instr.split(" ")[0];
+			String name = instr.split(" ")[1];
+			String eq = "=";
+			String patt = ConstGraml.matchPattern(value);
+			if(patt!=null){
+				value = SimpleMath.interpret(value, patt).toString();
 			}
-			new SimpleRegister("var_decl", sp);
+			String[] ret = new String[]{type, name, eq, value};
+			if(ConstGraml.DEBUG){
+				System.out.println(value);
+			}
+			new SimpleRegister("var_decl", ret);
 			return sp;
 		}
 		if(action.equals("var_upgrade")){
 			//Decoupage
-			String[] sp = Pattern.compile("( )+").split(line);
-			if(ConstGraml.DEBUG){
-				for(String sp1:sp){
-					System.out.println(sp1);
-				}
+			String[] sp = Pattern.compile("=").split(line);
+			String instr = sp[0];
+			String value = sp[1];
+			String name = instr.split(" ")[0];
+			String eq = "=";
+			String patt = ConstGraml.matchPattern(value);
+			if(patt!=null){
+				value= SimpleMath.interpret(value, patt).toString();
 			}
-			new SimpleRegister("var_upgrade", sp);
+			if(ConstGraml.DEBUG){
+				
+			}
+			String[] ret = new String[]{name, eq, value};
+			new SimpleRegister("var_upgrade", ret);
 			return sp;
 		}
 		if(action.equals("echo")){
 			String sp=line.split(" ")[1];
 			System.out.println(sp);
+			return new String[]{sp};
 		}
 		if(action.equals("recall")){
 			try {
@@ -69,38 +84,7 @@ public class Parser {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-		if(action.equals("math_plus")){
-			String[] sp = Pattern.compile("\\+").split(line);
-			for(String sp1:sp){
-				System.out.println("Plus-op => "+sp1.trim());
-			}
-			return sp;
-		}
-		if(action.equals("math_minus")){
-			String[] sp = Pattern.compile("-").split(line);
-			for(String sp1:sp){
-				System.out.println("Minus-op => "+sp1.trim());
-			}
-			return sp;
-		}
-		if(action.equals("math_prod")){
-			String[] sp = Pattern.compile("\\*").split(line);
-			for(String sp1:sp){
-				System.out.println("Prod-op => "+sp1.trim());
-			}
-			return sp;
-		}
-		if(action.equals("math_div")){
-			String[] sp = Pattern.compile("/").split(line);
-			for(String sp1:sp){
-				System.out.println("Div-op => "+sp1.trim());
-			}
-			return sp;
-		}
-		if(action.equals("unitary_value")){
-			System.out.println("Unit => "+line.trim());
-			return new String[]{line};
+			return line.split(" ");
 		}
 		throw new UnknownTokenException("Unknow token action : "+action);
 		
