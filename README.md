@@ -3,25 +3,23 @@ SimpleLang
 
 A Simple programming Language based on Java 1.7
 
-I will make a simple language without tools like JavaCC or other. Peoples would say : "Oh, that's too simple!". I know,
-it's just for fun.
+SimpleLang, as its name suggests, is a simple language. The purpose of the project is to have fun while surpassing me.
+
+It is built without any external tool like JavaCC or others.
 
 How to
-======
+------
 
 1) Build
---------
 
 Just compile the code from the Main class
 
 2) Test
--------
 
 For the moment, you can't test your own code because the language is too newer! :(
 
 Contact
-=======
+-------
 
-If you want do something in my project, contact me : nsurleraux(at)gmail.coù
-
+If you want to participate in this project, please feel free to contact me by email : nsurleraux(at)gmail.com
 
