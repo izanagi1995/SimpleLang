@@ -8,6 +8,8 @@ import be.izanagi.simplelang.register.variables.VarMemory;
 public class Main {
 	public static void main(String[] args) {
 		try {
+			String[] input = new String[]{"string test = qw", "integer chiffre = 3 + 3", "echo chiffre", "recall test"}; 
+			new Parser().parse(input);
 			new Parser().parse("string mot = az");
 			new Parser().parse("integer chiffre = 3 + 3");
 			new Parser().parse("echo mot");
@@ -19,7 +21,6 @@ public class Main {
 			new Parser().parse("chiffre= 18 / 3");
 			new Parser().parse("recall chiffre");
 		} catch (FormatParserInvalid e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

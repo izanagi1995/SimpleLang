@@ -34,6 +34,12 @@ public class Parser {
 		}
 		throw new FormatParserInvalid("Line not matched...");
 	}
+	public void parse(String[] input) throws FormatParserInvalid {
+		for(String line:input){
+			parse(line);
+		}
+		
+	}
 	private String[] dispatch(String action, String line) throws UnknownTokenException {
 		if(action.equals("var_decl")){
 			String[] sp = Pattern.compile("=").split(line);
@@ -78,10 +84,9 @@ public class Parser {
 		}
 		if(action.equals("recall")){
 			try {
-				System.out.println(VarMemory.recallFromName(line.split(" ")[1]).getValue());
+				System.out.println(VarMemory.recall(line.split(" ")[1]));
 				return line.split(" ");
 			} catch (VariableNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return line.split(" ");

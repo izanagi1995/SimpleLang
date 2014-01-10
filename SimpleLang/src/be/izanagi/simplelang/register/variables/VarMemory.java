@@ -25,4 +25,14 @@ public class VarMemory {
 		}
 		throw new VariableNotFoundException("Variable not found");
 	}
+	public static String recall(String n) throws VariableNotFoundException{
+		SimpleVariable sv = recallFromName(n);
+		Object k = sv.getValue();
+		if(k instanceof String){
+			return ((String) k).trim();
+		}else if(k instanceof Integer){
+			return ((Integer) k).toString().trim();
+		}
+		return null;
+	}
 }

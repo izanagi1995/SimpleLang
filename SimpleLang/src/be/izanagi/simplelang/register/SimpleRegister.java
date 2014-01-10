@@ -14,7 +14,7 @@ public class SimpleRegister {
 		if(action.equals("var_decl")){
 			String type = args[0];
 			String name = args[1];
-			Object value = args[3];
+			Object value = args[3].replaceAll("^\\s+|\\s+$", "");
 			Class clazz = AllowedTypes.valueOf(type).getInterpretClass();
 			if(ConstGraml.DEBUG){
 				System.out.println(clazz.getName());
@@ -33,7 +33,7 @@ public class SimpleRegister {
 			}
 		}else if(action.equals("var_upgrade")){
 			String name = args[0];
-			Object value = args[2];
+			Object value = args[2].replaceAll("^\\s+|\\s+$", "");
 			try {
 				SimpleVariable sv = VarMemory.recallFromName(name);
 				Class clazz = sv.getClasse();

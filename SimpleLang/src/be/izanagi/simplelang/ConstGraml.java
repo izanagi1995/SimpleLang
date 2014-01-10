@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ConstGraml {
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 	private static HashMap<String, String> pattern = new HashMap<String, String>();
 	public static void addToken(String pat, String type){
 		pattern.put(pat, type);
@@ -33,7 +33,6 @@ public class ConstGraml {
 			Pattern p = Pattern.compile(ent.getKey());
 			Matcher m = p.matcher(ln);
 			if(m.matches()){
-				System.out.println("--> "+ent.getValue());
 				return ent.getValue();
 			}
 		}
