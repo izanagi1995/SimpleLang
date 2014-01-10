@@ -2,7 +2,8 @@ package be.izanagi.simplelang.register.variables;
 
 public enum AllowedTypes {
 	string(String.class),
-	integer(Integer.class);
+	integer(Integer.class),
+	bool(Boolean.class);
 	
 	private Class c;
 	AllowedTypes(Class c){

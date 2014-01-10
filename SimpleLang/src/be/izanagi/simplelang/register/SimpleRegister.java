@@ -14,13 +14,15 @@ public class SimpleRegister {
 		if(action.equals("var_decl")){
 			String type = args[0];
 			String name = args[1];
-			Object value = args[3].replaceAll("^\\s+|\\s+$", "");
+			Object value = args[3].replaceAll("^\\s+|\\s+$", "").trim();
 			Class clazz = AllowedTypes.valueOf(type).getInterpretClass();
 			if(ConstGraml.DEBUG){
 				System.out.println(clazz.getName());
 			}	
 			if(clazz.getName().equals("java.lang.Integer")){
 				value = new Integer(Integer.parseInt(args[3]));
+			}else if(clazz.getName().equals("java.lang.Boolean")){
+				value = new Boolean(Boolean.parseBoolean(args[3]));
 			}else{
 				value = clazz.cast(args[3]);
 			}
@@ -39,6 +41,8 @@ public class SimpleRegister {
 				Class clazz = sv.getClasse();
 				if(clazz.getName().equals("java.lang.Integer")){
 					value = new Integer(Integer.parseInt(args[2]));
+				}else if(clazz.getName().equals("java.lang.Boolean")){
+					value = new Boolean(Boolean.parseBoolean(args[2]));
 				}else{
 					value = clazz.cast(args[2]);
 				}

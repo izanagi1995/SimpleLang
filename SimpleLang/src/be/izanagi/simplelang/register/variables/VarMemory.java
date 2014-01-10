@@ -17,6 +17,14 @@ public class VarMemory {
 	private static boolean exists(SimpleVariable a){
 		return mem.contains(a);
 	}
+	public static SimpleVariable isVariable(String k){
+		for(SimpleVariable sv:mem){
+			if(sv.getName().equals(k)){
+				return sv;
+			}
+		}
+		return null;
+	}
 	public static SimpleVariable recallFromName(String k) throws VariableNotFoundException{
 		for(SimpleVariable sv:mem){
 			if(sv.getName().equals(k)){

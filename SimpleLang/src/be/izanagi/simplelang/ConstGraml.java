@@ -16,14 +16,16 @@ public class ConstGraml {
 		return pattern.get(pat);
 	}
 	public static void init(){
-		pattern.put("[a-zA-Z]+( )+[a-zA-Z]+( )*=( )*.+", "var_decl");
-		pattern.put("[a-zA-Z]+( )*=( )*.+", "var_upgrade");
-		pattern.put("echo( )+[a-zA-Z]+", "echo");
-		pattern.put("recall( )+[a-zA-Z]+", "recall");
-		pattern.put("( )*[0-9]+( )?\\+( )?[0-9]+", "math_plus");
-		pattern.put("( )*[0-9]+( )?-( )?[0-9]+", "math_minus");
-		pattern.put("( )*[0-9]+( )?\\*( )?[0-9]+", "math_prod");
-		pattern.put("( )*[0-9]+( )?/( )?[0-9]+", "math_div");
+		pattern.put("[ \t\n\r\f]*[a-zA-Z]+( )+[a-zA-Z]+( )*=( )*[^=]+", "var_decl");
+		pattern.put("[ \t\n\r\f]*[a-zA-Z]+( )*=( )*[^=]+", "var_upgrade");
+		pattern.put("[ \t\n\r\f]*echo( )+.+", "echo");
+		pattern.put("[ \t\n\r\f]*recall( )+[a-zA-Z]+", "recall");
+		pattern.put("[ \t\n\r\f]*( )*[0-9]+( )?\\+( )?[0-9]+", "math_plus");
+		pattern.put("[ \t\n\r\f]*( )*[0-9]+( )?-( )?[0-9]+", "math_minus");
+		pattern.put("[ \t\n\r\f]*( )*[0-9]+( )?\\*( )?[0-9]+", "math_prod");
+		pattern.put("[ \t\n\r\f]*( )*[0-9]+( )?/( )?[0-9]+", "math_div");
+		pattern.put("^[ \t\n\r\f]*if .+ do$", "if_statment");
+		pattern.put("^[ \t\n\r\f]*end$", "end");
 	}
 	public static Set<String> getPatterns(){
 		return pattern.keySet();
