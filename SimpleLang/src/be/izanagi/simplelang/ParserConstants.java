@@ -15,13 +15,13 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int TYPE = 6;
   /** RegularExpression Id. */
-  int VNAME = 7;
+  int ASSIGNSIGN = 7;
   /** RegularExpression Id. */
-  int ASSIGNSIGN = 8;
+  int INT = 8;
   /** RegularExpression Id. */
-  int STRING = 9;
+  int WORD = 9;
   /** RegularExpression Id. */
-  int INT = 10;
+  int STRING = 10;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -35,10 +35,16 @@ public interface ParserConstants {
     "\"\\r\"",
     "\",\"",
     "<TYPE>",
-    "<VNAME>",
     "\"=\"",
-    "<STRING>",
     "<INT>",
+    "<WORD>",
+    "<STRING>",
+    "\"(\"",
+    "\")\"",
+    "\"+\"",
+    "\"-\"",
+    "\"*\"",
+    "\"/\"",
   };
 
 }

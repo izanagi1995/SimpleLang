@@ -2,6 +2,8 @@ options {
 /** create a pure parser */
 STATIC=false;
 MULTI=true;
+UNICODE_INPUT=true;
+LOOKAHEAD = 2;
 }
 PARSER_BEGIN(Parser)
 package be.izanagi.simplelang;
@@ -31,47 +33,90 @@ SKIP : { " " | "\t" | "\n" | "\r" }
 TOKEN:
 {  < ENDLINE : (",") >
 | < TYPE    : ("int"|"string") >
-| < VNAME   : ((["a"-"z"]|["A"-"Z"])+) >
-| < ASSIGNSIGN  : ("=") >
-| < STRING  : ((["a"-"z"]|["A"-"Z"]|["0"-"9"])+) >
+| < ASSIGNSIGN : ("=") >
 | < INT     : (["0"-"9"])+ >
+| < WORD    : (["a"-"z"]|["A"-"Z"]|< INT >)+ >
+| < STRING  : ("\"" < WORD >((" ")+< WORD >)* "\"") >
 }
 ASTStart Start () #Start:{}
 {
-  (Assignation() < ENDLINE >)*< ENDLINE >
+  ((Assignation()|FuncCall()) < ENDLINE >)*< ENDLINE >
   {    return jjtThis;
   }
 }
-void Assignation() #Assignation:{}{
-  Type() VariableName() < ASSIGNSIGN > Content()
+void Assignation() #Assignation:{}{  Type() FuncVarName() < ASSIGNSIGN > Content()
 }
-void Content() #Content:{
-	Token name;
+void FuncCall():{}{  FuncVarName()"("Args()")"
 }
-{  ( name=< INT > )
-	{
-	jjtThis.value= Integer.parseInt(name.image);
-	}
-| ( name=< STRING >)
-	{
-	jjtThis.value= name.image;
-	} 
-}
-void VariableName() #VariableName:{
+void FuncVarName():
+{
   Token t;
+}{  ( t=< WORD > )
+  {
+    jjtThis.value = t.image;
+  }
+}
+void Args():{}{  (Content()(","Content())*)*
+}
+void Type():{  Token t;}{  ( t=< TYPE > )
+  {    jjtThis.value = t.image;
+  }
+}
+void Content():{  Token t;
+  int val;
 }
 {
-  ( t = < VNAME >)
-  	{
-    jjtThis.value= t.image;
-  	}
+  ( t=< WORD >)
+  {
+    jjtThis.value = t.image;
+  }
+  |   ( t=< STRING > )  {    jjtThis.value = t.image;
+  }
+  | 
+  (val = MathExpr())  {    jjtThis.value = val;
+  }
 }
-void Type() #Type:{
-  Token t;
+int MathExpr():{   int value;
+}{   value = somme()
+   {return value;} 
 }
-{  ( t = < TYPE > )
-  	{    jjtThis.value= t.image;
-  	}
- }  
-  
+
+int somme() :{  int x;
+  int y;
+}
+{
+  x=prod()
+  (
+    "+" y=somme()	{ x += y; }
+    |
+    "-" y=somme()	{ x -= y; } 
+  )*
+  { return x; }
+}
+int prod() :{  int x;
+  int y;
+}
+{
+  x=valeur()
+  (
+    "*" y=prod()	{ x *= y; }
+    |
+    "/" y=prod()	{ x /= y; }
+  )*
+  { return x; }}
+int valeur() :{  int value;
+}
+{    "-" value=number()	{ return -value; }
+    |
+    value=number()		{ return value; }
+}
+int sqrt(){  int value;
+}
+int number() :{  Token t;
+  int value;
+}
+{  t=< INT >				{return Integer.parseInt(t.image);}
+  |
+  "(" value=somme() ")" 	{return value;}
+}           
      
