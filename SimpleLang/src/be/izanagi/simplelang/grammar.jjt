@@ -1,0 +1,77 @@
+options {
+/** create a pure parser */
+STATIC=false;
+MULTI=true;
+}
+PARSER_BEGIN(Parser)
+package be.izanagi.simplelang;
+
+import java.io.FileInputStream;
+import be.izanagi.simplelang.interpretation.Interpreter;
+
+public class Parser{
+	
+	public static void main(String args[])
+	{
+		try
+		{
+		//java.io.StringReader r= new java.io.StringReader(args[0]);
+		Parser app= new Parser(System.in);
+		ASTStart x=ASTStart.class.cast(app.Start());
+		new Interpreter().interpret(x);		}catch(Exception err){
+			err.printStackTrace();
+		}
+		
+	}
+}
+
+PARSER_END(Parser)
+
+SKIP : { " " | "\t" | "\n" | "\r" }
+TOKEN:
+{  < ENDLINE : (",") >
+| < TYPE    : ("int"|"string") >
+| < VNAME   : ((["a"-"z"]|["A"-"Z"])+) >
+| < ASSIGNSIGN  : ("=") >
+| < STRING  : ((["a"-"z"]|["A"-"Z"]|["0"-"9"])+) >
+| < INT     : (["0"-"9"])+ >
+}
+ASTStart Start () #Start:{}
+{
+  (Assignation() < ENDLINE >)*< ENDLINE >
+  {    return jjtThis;
+  }
+}
+void Assignation() #Assignation:{}{
+  Type() VariableName() < ASSIGNSIGN > Content()
+}
+void Content() #Content:{
+	Token name;
+}
+{  ( name=< INT > )
+	{
+	jjtThis.value= Integer.parseInt(name.image);
+	}
+| ( name=< STRING >)
+	{
+	jjtThis.value= name.image;
+	} 
+}
+void VariableName() #VariableName:{
+  Token t;
+}
+{
+  ( t = < VNAME >)
+  	{
+    jjtThis.value= t.image;
+  	}
+}
+void Type() #Type:{
+  Token t;
+}
+{  ( t = < TYPE > )
+  	{    jjtThis.value= t.image;
+  	}
+ }  
+  
+     
