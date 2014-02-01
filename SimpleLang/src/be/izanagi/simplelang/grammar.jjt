@@ -53,6 +53,8 @@ TOKEN_MGR_DECLS : {
     int count_comm = 1;
 }
 
+//Test
+
 
 SKIP : { " " | "\t" | "\n" | "\r"}
 SKIP : { "((" : IN_COMMENT }  < IN_COMMENT > SKIP :{  "((" {count_comm++;}
