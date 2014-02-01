@@ -4,32 +4,48 @@ package be.izanagi.simplelang;
 public interface ParserTreeConstants
 {
   public int JJTSTART = 0;
-  public int JJTASSIGNATION = 1;
-  public int JJTFUNCCALL = 2;
-  public int JJTFUNCVARNAME = 3;
-  public int JJTARGS = 4;
-  public int JJTTYPE = 5;
-  public int JJTCONTENT = 6;
-  public int JJTMATHEXPR = 7;
-  public int JJTSOMME = 8;
-  public int JJTPROD = 9;
-  public int JJTVALEUR = 10;
-  public int JJTNUMBER = 11;
+  public int JJTIFBLOCK = 1;
+  public int JJTWHILEBLOCK = 2;
+  public int JJTFUNCDECL = 3;
+  public int JJTRETURNS = 4;
+  public int JJTDECLARATION = 5;
+  public int JJTASSIGNATION = 6;
+  public int JJTFUNCCALL = 7;
+  public int JJTFUNCNAME = 8;
+  public int JJTVARNAME = 9;
+  public int JJTTYPEDARGS = 10;
+  public int JJTARGS = 11;
+  public int JJTTYPE = 12;
+  public int JJTADD = 13;
+  public int JJTTERM = 14;
+  public int JJTFACTOR = 15;
+  public int JJTINTBOOLEAN = 16;
+  public int JJTSTRINGBOOLEAN = 17;
+  public int JJTSTRINGLIT = 18;
+  public int JJTNUMBER = 19;
 
 
   public String[] jjtNodeName = {
     "Start",
+    "IfBlock",
+    "WhileBlock",
+    "FuncDecl",
+    "Returns",
+    "Declaration",
     "Assignation",
     "FuncCall",
-    "FuncVarName",
+    "FuncName",
+    "VarName",
+    "TypedArgs",
     "Args",
     "Type",
-    "Content",
-    "MathExpr",
-    "somme",
-    "prod",
-    "valeur",
-    "number",
+    "Add",
+    "Term",
+    "Factor",
+    "IntBoolean",
+    "StringBoolean",
+    "StringLit",
+    "Number",
   };
 }
-/* JavaCC - OriginalChecksum=3ae046880732588fe0f98acab373d820 (do not edit this line) */
+/* JavaCC - OriginalChecksum=ee90056c32a34bc669e9e2013bd366ca (do not edit this line) */

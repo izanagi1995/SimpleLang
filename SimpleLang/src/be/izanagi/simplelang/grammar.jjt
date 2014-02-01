@@ -9,9 +9,25 @@ PARSER_BEGIN(Parser)
 package be.izanagi.simplelang;
 
 import java.io.FileInputStream;
+import java.util.Stack;
 import be.izanagi.simplelang.interpretation.Interpreter;
+import be.izanagi.simplelang.astprint.ASTPrinter;
 
 public class Parser{
+    /**
+     * Stack to register all previous statuses
+     */
+  	public Stack<Integer> status_hist = new Stack<Integer>();
+  	/**
+  	 * Status values :
+  	 * 0 = normal,
+  	 * 1 = In a IfBlock, condition is verified
+  	 * -1 = In a IfBlock, condition isn't verified
+  	 * 2 = In a WhileBlock, condition isn verified
+  	 * -2 = In a WhileBlock, condition is verified
+  	 */
+  	public int status;
+  	
 	
 	public static void main(String args[])
 	{
@@ -20,7 +36,11 @@ public class Parser{
 		//java.io.StringReader r= new java.io.StringReader(args[0]);
 		Parser app= new Parser(System.in);
 		ASTStart x=ASTStart.class.cast(app.Start());
-		new Interpreter().interpret(x);		}catch(Exception err){
+		new Interpreter().interpret(x);
+		ASTPrinter print = new ASTPrinter("dump.txt", x);
+		print.dump("",x);
+		print.close();
+		//MemoryVar.dumpMemory();		}catch(Exception err){
 			err.printStackTrace();
 		}
 		
@@ -29,94 +49,194 @@ public class Parser{
 
 PARSER_END(Parser)
 
-SKIP : { " " | "\t" | "\n" | "\r" }
+TOKEN_MGR_DECLS : {
+    int count_comm = 1;
+}
+
+
+SKIP : { " " | "\t" | "\n" | "\r"}
+SKIP : { "((" : IN_COMMENT }  < IN_COMMENT > SKIP :{  "((" {count_comm++;}
+  | "))" {count_comm--;
+    if(count_comm==0)    {      SwitchTo(DEFAULT);
+    }
+  }
+  | < ~[] >
+}
+
 TOKEN:
 {  < ENDLINE : (",") >
+| < WHILE   : ("while") >
+| < IF      : ("if") >
+| < DO      : ("do") >
+| < END     : ("end") >
 | < TYPE    : ("int"|"string") >
 | < ASSIGNSIGN : ("=") >
-| < INT     : (["0"-"9"])+ >
-| < WORD    : (["a"-"z"]|["A"-"Z"]|< INT >)+ >
+| < FUNC    : ("func") >
+| < RETURN  : ("return") >
+| < INT     : (("-")?["0"-"9"])+ >
+| < WORD    : (["a"-"z"]|["A"-"Z"])(["a"-"z"]|["A"-"Z"]|< INT >)* >
 | < STRING  : ("\"" < WORD >((" ")+< WORD >)* "\"") >
+| < EQSIGN  : ("==") >
+| < NESIGN  : ("!=") >
+| < GESIGN  : (">=") >
+| < LESIGN  : ("<=") >
+| < GTSIGN  : (">") >
+| < LTSIGN  : ("<") >
+
 }
 ASTStart Start () #Start:{}
 {
-  ((Assignation()|FuncCall()) < ENDLINE >)*< ENDLINE >
+  (IfBlock()|WhileBlock()|FuncDecl()|((FuncCall()|Assignation()|Declaration())< ENDLINE >))+< ENDLINE >
   {    return jjtThis;
   }
 }
-void Assignation() #Assignation:{}{  Type() FuncVarName() < ASSIGNSIGN > Content()
+/*
+ *
+ * BLOCKS
+ *
+ */
+void IfBlock() :{  boolean cond;
+  Token token = null;
 }
-void FuncCall():{}{  FuncVarName()"("Args()")"
+{  < IF >(IntBoolean() | StringBoolean())< DO >
+  (
+    WhileBlock()  | IfBlock()
+  | (FuncCall()|Assignation()|Declaration())< ENDLINE >
+  )*
+  < END >
 }
-void FuncVarName():
+void WhileBlock() :{}
+{
+  < WHILE >(IntBoolean() | StringBoolean())< DO >
+  (
+    WhileBlock()
+  | IfBlock()
+  | (FuncCall()|Assignation()|Declaration())< ENDLINE >
+  )*
+  < END >
+}
+void FuncDecl():{}{
+  < FUNC > FuncName()TypedArgs()")"((FuncCall()|Assignation()|Declaration())< ENDLINE >)*(Returns())?< END >
+}
+void Returns():{}
+{
+  < RETURN > (FuncCall() | VarName() | StringLit() | Add())< ENDLINE >
+}
+/*
+ *
+ * STATMENTS
+ *
+ */
+void Declaration():{}{  Type() VarName() < ASSIGNSIGN > (FuncCall() | StringLit() | Add())    
+}
+void Assignation():{}{  VarName() < ASSIGNSIGN > (FuncCall() | StringLit() | Add())
+}
+void FuncCall():{}{  FuncName()Args()")"
+}
+/*
+ *
+ * NAMES
+ *
+ */
+void FuncName():
 {
   Token t;
 }{  ( t=< WORD > )
   {
     jjtThis.value = t.image;
   }
+  "("
 }
-void Args():{}{  (Content()(","Content())*)*
+void VarName():
+{
+  Token t;
+}
+{
+  ( t=< WORD > )
+  {
+    jjtThis.value = t.image;
+  }
+}
+/*
+ *
+ * SUBS
+ *
+ */
+void TypedArgs():{}{  (Type() VarName()(","Type() VarName())*)*
+}
+void Args():{}{  ((FuncCall() | VarName() | StringLit() | Add())(","(FuncCall() | VarName() | StringLit() | Add()))*)*
 }
 void Type():{  Token t;}{  ( t=< TYPE > )
   {    jjtThis.value = t.image;
   }
 }
-void Content():{  Token t;
-  int val;
+/*
+ *
+ * MATH
+ *
+ */
+void Add():{}{  Term()(("+"{jjtThis.value = "+";}|"-"{jjtThis.value = "-";})Term())*
+}void Term():{}{  Factor()(("*"{jjtThis.value = "*";}|"/"{jjtThis.value = "/";})Factor())*
 }
+void Factor():{}
 {
-  ( t=< WORD >)
-  {
-    jjtThis.value = t.image;
-  }
-  |   ( t=< STRING > )  {    jjtThis.value = t.image;
-  }
-  | 
-  (val = MathExpr())  {    jjtThis.value = val;
-  }
+  "("Add()")"|Number()|VarName()
 }
-int MathExpr():{   int value;
-}{   value = somme()
-   {return value;} 
-}
-
-int somme() :{  int x;
-  int y;
-}
-{
-  x=prod()
-  (
-    "+" y=somme()	{ x += y; }
-    |
-    "-" y=somme()	{ x -= y; } 
-  )*
-  { return x; }
-}
-int prod() :{  int x;
-  int y;
-}
-{
-  x=valeur()
-  (
-    "*" y=prod()	{ x *= y; }
-    |
-    "/" y=prod()	{ x /= y; }
-  )*
-  { return x; }}
-int valeur() :{  int value;
-}
-{    "-" value=number()	{ return -value; }
-    |
-    value=number()		{ return value; }
-}
-int sqrt(){  int value;
-}
-int number() :{  Token t;
-  int value;
-}
-{  t=< INT >				{return Integer.parseInt(t.image);}
+/*
+ *
+ * BOOLEAN
+ *
+ */  
+void IntBoolean():{
+  Token t;
+}{
+  Number()
+  (    t= < EQSIGN > (Number()|VarName()) {jjtThis.value = t.image;}|
+    t= < NESIGN > (Number()|VarName()) {jjtThis.value = t.image;}|
+    t= < GESIGN > (Number()|VarName()) {jjtThis.value = t.image;}|
+    t= < LESIGN > (Number()|VarName()) {jjtThis.value = t.image;}|
+    t= < GTSIGN > (Number()|VarName()) {jjtThis.value = t.image;}|
+    t= < LTSIGN > (Number()|VarName()) {jjtThis.value = t.image;}
+  )
   |
-  "(" value=somme() ")" 	{return value;}
-}           
+  VarName()
+  (    t= < EQSIGN > Number() {jjtThis.value = t.image;}|
+    t= < NESIGN > Number() {jjtThis.value = t.image;}|
+    t= < GESIGN > Number() {jjtThis.value = t.image;}|
+    t= < LESIGN > Number() {jjtThis.value = t.image;}|
+    t= < GTSIGN > Number() {jjtThis.value = t.image;}|
+    t= < LTSIGN > Number() {jjtThis.value = t.image;}
+  )
+}
+void StringBoolean():{
+  Token t;
+}{
+  StringLit()
+  (    t = < EQSIGN > (StringLit()|VarName()) {jjtThis.value = t.image;}
+  )
+  |
+  VarName()
+  (    t = < EQSIGN > StringLit() {jjtThis.value = t.image;}
+  )
+  //Idem
+  //Et faire une VarBoolean
+}
+/*
+ *
+ * TYPES
+ *
+ */
+void StringLit():
+{
+  Token t;
+}
+{  t = < STRING > { jjtThis.value = t.image; }
+}
+void Number():{
+  Token t;
+}
+{
+  t= < INT > { jjtThis.value = t.image; }
+}
+                          
      

@@ -11,20 +11,46 @@ public interface ParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int ENDLINE = 5;
+  int ENDLINE = 9;
   /** RegularExpression Id. */
-  int TYPE = 6;
+  int WHILE = 10;
   /** RegularExpression Id. */
-  int ASSIGNSIGN = 7;
+  int IF = 11;
   /** RegularExpression Id. */
-  int INT = 8;
+  int DO = 12;
   /** RegularExpression Id. */
-  int WORD = 9;
+  int END = 13;
   /** RegularExpression Id. */
-  int STRING = 10;
+  int TYPE = 14;
+  /** RegularExpression Id. */
+  int ASSIGNSIGN = 15;
+  /** RegularExpression Id. */
+  int FUNC = 16;
+  /** RegularExpression Id. */
+  int RETURN = 17;
+  /** RegularExpression Id. */
+  int INT = 18;
+  /** RegularExpression Id. */
+  int WORD = 19;
+  /** RegularExpression Id. */
+  int STRING = 20;
+  /** RegularExpression Id. */
+  int EQSIGN = 21;
+  /** RegularExpression Id. */
+  int NESIGN = 22;
+  /** RegularExpression Id. */
+  int GESIGN = 23;
+  /** RegularExpression Id. */
+  int LESIGN = 24;
+  /** RegularExpression Id. */
+  int GTSIGN = 25;
+  /** RegularExpression Id. */
+  int LTSIGN = 26;
 
   /** Lexical state. */
   int DEFAULT = 0;
+  /** Lexical state. */
+  int IN_COMMENT = 1;
 
   /** Literal token values. */
   String[] tokenImage = {
@@ -33,14 +59,30 @@ public interface ParserConstants {
     "\"\\t\"",
     "\"\\n\"",
     "\"\\r\"",
+    "\"((\"",
+    "\"((\"",
+    "\"))\"",
+    "<token of kind 8>",
     "\",\"",
+    "\"while\"",
+    "\"if\"",
+    "\"do\"",
+    "\"end\"",
     "<TYPE>",
     "\"=\"",
+    "\"func\"",
+    "\"return\"",
     "<INT>",
     "<WORD>",
     "<STRING>",
-    "\"(\"",
+    "\"==\"",
+    "\"!=\"",
+    "\">=\"",
+    "\"<=\"",
+    "\">\"",
+    "\"<\"",
     "\")\"",
+    "\"(\"",
     "\"+\"",
     "\"-\"",
     "\"*\"",
