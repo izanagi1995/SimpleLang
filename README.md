@@ -18,8 +18,3 @@ Just compile the code from the Main class
 
 For the moment, you can't test your own code because the language is too newer! :(
 
-Contact
--------
-
-If you want to participate in this project, please feel free to contact me by email : nsurleraux(at)gmail.com
-
